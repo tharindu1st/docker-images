@@ -75,19 +75,10 @@ function createDB {
    echo "DEDICATED_THROUGH_BROKER_LISTENER=ON"  >> $ORACLE_HOME/network/admin/listener.ora && \
    echo "DIAG_ADR_ENABLED = off"  >> $ORACLE_HOME/network/admin/listener.ora;
 
-   su -p oracle -c "sqlplus / as sysdba <<EOF
-      EXEC DBMS_XDB.SETLISTENERLOCALACCESS(FALSE);
-      
-      ALTER DATABASE ADD LOGFILE GROUP 4 ('$ORACLE_BASE/oradata/$ORACLE_SID/redo04.log') SIZE 50m;
-      ALTER DATABASE ADD LOGFILE GROUP 5 ('$ORACLE_BASE/oradata/$ORACLE_SID/redo05.log') SIZE 50m;
-      ALTER DATABASE ADD LOGFILE GROUP 6 ('$ORACLE_BASE/oradata/$ORACLE_SID/redo06.log') SIZE 50m;
-      ALTER SYSTEM SWITCH LOGFILE;
-      ALTER SYSTEM SWITCH LOGFILE;
-      ALTER SYSTEM CHECKPOINT;
-      ALTER DATABASE DROP LOGFILE GROUP 1;
-      ALTER DATABASE DROP LOGFILE GROUP 2;
-      
-      ALTER SYSTEM SET db_recovery_file_dest='';
+   su -p oracle -c "sqlplus / as sysdba <<EOF      
+      CREATE USER $DB_NAME identified by $DB_NAME ACCOUNT unlock;
+      GRANT CREATE SESSION, dba to $DB_NAME;
+      commit;
 EOF"
 
   # Move database operational files to oradata
