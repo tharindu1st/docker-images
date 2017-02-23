@@ -70,7 +70,6 @@ RUN yum -y install unzip libaio bc initscripts net-tools openssl && \
     chmod u+x $ORACLE_BASE/$RUN_FILE && \
     chmod u+x $ORACLE_BASE/$PWD_FILE
 
-VOLUME ["$ORACLE_BASE/oradata"]
 EXPOSE 1521 8080
 
 CMD $ORACLE_BASE/$RUN_FILE
